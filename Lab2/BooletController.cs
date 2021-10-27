@@ -9,7 +9,7 @@ public class BooletController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -20,11 +20,11 @@ public class BooletController : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }   
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.Tag == "Ghoul" || other.Tag == "Raider")
+        if (other.tag == "Ghoul" || other.tag == "Raider")
         {
             Destroy(gameObject);
             Destroy(other.gameObject);

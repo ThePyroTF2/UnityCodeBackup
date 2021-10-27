@@ -7,7 +7,13 @@ public class PlayerController : MonoBehaviour
     public float speed = 15f;
     public float horizontalInput;
     public float horizontalLimit = 16f;
-    public GameObect boolet;
+    public GameObject boolet;
+    bool isShooting = false;
+
+    void ShootBoolet()
+    {
+        isShooting = false;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -19,18 +25,31 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
+
         transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * speed);
-        if (transform.position.c < -horizontalLimit)
+
+        if (transform.position.x < -horizontalLimit)
         {
-            transform.position = new Vector3(-horizontalLimit, transform.position.y, transform.position.z);
+            transform.position = new Vector3(horizontalLimit * -1, transform.position.y, transform.position.z);
         }
         if (transform.position.x > horizontalLimit)
         {
             transform.position = new Vector3(horizontalLimit, transform.position.y, transform.position.z);
         }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Instantiate(boolet, new Vector3(transform.position.x, boolet.transform.position.y, transform.position.z), transform.rotation);
+            if (isShooting == false)
+            {
+                Instantiate(boolet, new Vector3(transform.position.x, boolet.transform.position.y, transform.position.z), transform.rotation);
+                Invoke("ShootBoolet", 0.5f);
+                isShooting = true;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Destroy(gameObject);
         }
     }
 }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class EnemyController : using UnityEngine;
-
 public class EnemyController : MonoBehaviour
 {
     public float speed;
@@ -12,18 +10,28 @@ public class EnemyController : MonoBehaviour
     public bool moveRight = true;
     Animation anim;
 
+    void Restart()
+    {
+        PlayerPrefs.SetInt("Restart", 0);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        if (gameObject.Tag == "Raider")
+        if (gameObject.tag == "Raider")
         {
             speed = 5f;
         }
         else if (gameObject.tag == "Ghoul")
         {
             speed = 8f;
+        }
+        if (gameObject.tag == "Ghoul")
+        {
             anim = GetComponent<Animation>();
         }
+
+        PlayerPrefs.SetInt("Restart", 0);
     }
 
     // Update is called once per frame
@@ -37,14 +45,14 @@ public class EnemyController : MonoBehaviour
                     moveRight = false;
                     rowNumber++;
                     transform.Translate(0, 0, 0.5f);
-                    speed += rowNumber / 5;
+                    speed = speed + (rowNumber / 5);
                 }
                 if (transform.position.x < -16)
                 {
                     moveRight = true;
                     rowNumber++;
                     transform.Translate(0, 0, 0.5f);
-                    speed += rowNumber / 5
+                    speed = speed + (rowNumber / 5);
                 }
 
                 switch (moveRight)
@@ -64,11 +72,17 @@ public class EnemyController : MonoBehaviour
                 }
                 break;
         }
+        
+        if (PlayerPrefs.GetInt("Restart") == 1)
+        {
+            Destroy(gameObject);
+            Invoke("Restart", 0.5f);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.Tag == "Player")
+        if (other.tag == "Player")
         {
             PlayerPrefs.SetInt("GameOver", 1);
             Destroy(other);
