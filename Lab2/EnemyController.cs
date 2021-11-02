@@ -9,6 +9,7 @@ public class EnemyController : MonoBehaviour
     public float rowNumber = 1;
     public bool moveRight = true;
     Animation anim;
+    AudioSource source;
 
     void Restart()
     {
@@ -32,6 +33,8 @@ public class EnemyController : MonoBehaviour
         }
 
         PlayerPrefs.SetInt("Restart", 0);
+
+        source = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -86,6 +89,11 @@ public class EnemyController : MonoBehaviour
         {
             PlayerPrefs.SetInt("GameOver", 1);
             Destroy(other);
+        }
+
+        if (other.tag == "Ghoul" || other.tag == "Raider")
+        {
+            source.Play();
         }
     }
 }
