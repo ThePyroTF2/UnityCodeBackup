@@ -91,7 +91,7 @@ public class EnemyController : MonoBehaviour
             Destroy(other);
         }
 
-        if (other.tag == "Ghoul" || other.tag == "Raider")
+        if (other.tag == "Boolet")
         {
             source.Play();
         }
