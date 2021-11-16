@@ -47,7 +47,7 @@ public class ObstacleController : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collider collision)
+    void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Player")
         {

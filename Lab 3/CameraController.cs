@@ -22,6 +22,5 @@ public class CameraController : MonoBehaviour
             transform.position = new Vector3(transform.position.x, 10, transform.position.z);
         }
         PlayerPrefs.SetFloat("CameraHeight", transform.position.y);
-        Debug.Log(PlayerPrefs.GetFloat("CameraHeight"));
     }
 }

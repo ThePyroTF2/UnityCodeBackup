@@ -13,6 +13,7 @@ public class SpawnManager : MonoBehaviour
     int obstacleIndex;
     public TextMeshPro scoreCounter;
     int score = 0;
+    BoxCollider[] obstacleHitCollider;
 
     public void AddToScore(int increase)
     {
@@ -24,8 +25,11 @@ public class SpawnManager : MonoBehaviour
         Vector3 spawnScale = new Vector3(obstacles[obstacleIndex].transform.localScale.x, Random.Range(PlayerPrefs.GetFloat("ObstacleLowerHeightLimit"), PlayerPrefs.GetFloat("ObstacleUpperHeightLimit")), Random.Range(0.25f , 3));
         Vector3 spawnPos = new Vector3(Random.Range(-obstacleXRange / 2, obstacleXRange), 0, 10);
         obstacleIndex = Random.Range(0, obstacles.Length);
-        Instantiate(obstacles[obstacleIndex], spawnPos, obstacles[obstacleIndex].transform.rotation);
+        obstacleHitCollider = obstacles[obstacleIndex].GetComponents<BoxCollider>();
         obstacles[obstacleIndex].transform.localScale = spawnScale;
+        obstacleHitCollider[1].size = obstacles[obstacleIndex].transform.localScale;
+        obstacleHitCollider[1].center = new Vector3(obstacles[obstacleIndex].transform.position.x, obstacles[obstacleIndex].transform.localScale.y / 2, obstacles[obstacleIndex].transform.position.z);
+        Instantiate(obstacles[obstacleIndex], spawnPos, obstacles[obstacleIndex].transform.rotation);
         isSpawning = false;
     }
 
