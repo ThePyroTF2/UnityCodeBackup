@@ -13,6 +13,6 @@ public class ScoreCounterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector3(transform.position.x, PlayerPrefs.GetFloat("CameraHeight") - 8, transform.position.z);
+        transform.position = new Vector3(transform.position.x, BetterPlayerPrefs.GetFloat("CameraHeight") - 8, transform.position.z);
     }
 }

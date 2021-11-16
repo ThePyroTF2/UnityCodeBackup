@@ -13,14 +13,14 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(PlayerPrefs.GetFloat("PlayerHeight") > 10f)
+        if(BetterPlayerPrefs.GetFloat("PlayerHeight") > 10f)
         {
-            transform.position = new Vector3(transform.position.x, PlayerPrefs.GetFloat("PlayerHeight"), transform.position.z);
+            transform.position = new Vector3(transform.position.x, BetterPlayerPrefs.GetFloat("PlayerHeight"), transform.position.z);
         }
-        if(PlayerPrefs.GetFloat("PlayerHeight") < 10f)
+        if(BetterPlayerPrefs.GetFloat("PlayerHeight") < 10f)
         {
             transform.position = new Vector3(transform.position.x, 10, transform.position.z);
         }
-        PlayerPrefs.SetFloat("CameraHeight", transform.position.y);
+        BetterPlayerPrefs.SetFloat("CameraHeight", transform.position.y);
     }
 }

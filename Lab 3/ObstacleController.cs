@@ -6,13 +6,11 @@ public class ObstacleController : MonoBehaviour
 {
     GameObject spawnManager;
     SpawnManager spawnManagerScript;
-    Collider col;
 
     // Start is called before the first frame update
     void Start()
     {
-        PlayerPrefs.SetFloat("Speed", 2f);
-        col = GetComponent<Collider>();
+        BetterPlayerPrefs.SetFloat("Speed", 2f);
         spawnManager = GameObject.Find("SpawnManager");
         spawnManagerScript = spawnManager.GetComponent<SpawnManager>();
     }
@@ -20,9 +18,9 @@ public class ObstacleController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(PlayerPrefs.GetInt("GameOver") == 0)
+        if(BetterPlayerPrefs.GetBool("GameOver") == false)
         {
-            transform.Translate(Vector3.right * PlayerPrefs.GetFloat("Speed") * Time.deltaTime);
+            transform.Translate(Vector3.right * BetterPlayerPrefs.GetFloat("Speed") * Time.deltaTime);
         }
         if(Input.GetKeyDown(KeyCode.R) == true)
         {
@@ -31,10 +29,10 @@ public class ObstacleController : MonoBehaviour
         if(transform.position.z < -15)
         {
             Destroy(gameObject);
-            if(PlayerPrefs.GetFloat("Speed") <= 5f)
+            if(BetterPlayerPrefs.GetFloat("Speed") <= 5f)
             {
-                PlayerPrefs.SetFloat("Speed", PlayerPrefs.GetFloat("Speed") + 0.1f);
-                PlayerPrefs.SetInt("ObstacleNumber", PlayerPrefs.GetInt("ObstacleNumber") + 1);
+                BetterPlayerPrefs.PlusEqualsFloat("Speed", 0.1f);
+                BetterPlayerPrefs.PlusPlusInt("ObstacleNumber");
             }
         }
     }
@@ -51,7 +49,7 @@ public class ObstacleController : MonoBehaviour
     {
         if(collision.gameObject.tag == "Player")
         {
-            PlayerPrefs.SetInt("GameOver", 1);
+            BetterPlayerPrefs.SetBool("GameOver", true);
         }
     }
 }

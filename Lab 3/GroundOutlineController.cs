@@ -18,9 +18,9 @@ public class GroundOutlineController : MonoBehaviour
     void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
-        switch(PlayerPrefs.GetInt("GameOver"))
+        switch(BetterPlayerPrefs.GetBool("GameOver"))
         {
-            case 0:
+            case false:
                 transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * speed);
 
                 if(transform.position.x > horizontalLimit)
@@ -37,7 +37,7 @@ public class GroundOutlineController : MonoBehaviour
                     Destroy(gameObject);
                 }
                 break;
-            case 1:
+            case true:
                 break;
         }
     }

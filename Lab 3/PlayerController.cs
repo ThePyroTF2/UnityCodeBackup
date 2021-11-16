@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-//using BetterPlayerPrefs;
 
 namespace Lab3
 {
@@ -17,33 +16,13 @@ namespace Lab3
         public float speed = 4f;
         public float horizontalLimit = 10;
 
-        public static class BetterPlayerPrefs
-        {
-            public static void PlusEqualsFloat(string prefName, float increase)
-            {
-                PlayerPrefs.SetFloat(prefName, PlayerPrefs.GetFloat(prefName) + increase);
-            }
-            public static void PlusEqualsInt(string prefName, int increase)
-            {
-                PlayerPrefs.SetInt(prefName, PlayerPrefs.GetInt(prefName) + increase);
-            }
-            public static void PlusPlusFloat(string prefName)
-            {
-                PlayerPrefs.SetFloat(prefName, PlayerPrefs.GetFloat(prefName) + 1);
-            }
-            public static void PlusPlusInt(string prefName)
-            {
-                PlayerPrefs.SetInt(prefName, PlayerPrefs.GetInt(prefName) + 1);
-            }
-        }
-
         // Start is called before the first frame update
         void Start()
         {
             rb = GetComponent<Rigidbody>();
-            PlayerPrefs.SetInt("GameOver", 0);
-            PlayerPrefs.SetInt("ObstacleNumber", 0);
-            PlayerPrefs.SetFloat("PlayerHeight", 0);
+            BetterPlayerPrefs.SetBool("GameOver", false);
+            BetterPlayerPrefs.SetInt("ObstacleNumber", 0);
+            BetterPlayerPrefs.SetFloat("PlayerHeight", 0);
             
         }
 
@@ -51,9 +30,9 @@ namespace Lab3
         void Update()
         {
             horizontalInput = Input.GetAxis("Horizontal");
-            switch(PlayerPrefs.GetInt("GameOver"))
+            switch(BetterPlayerPrefs.GetBool("GameOver"))
             {
-                case 0:
+                case false:
                     if(Input.GetKeyDown(jumpKey) == true &&  jumpCounter <= jumpLimit - 1)
                     {
                         jumpCounter++;
@@ -91,9 +70,9 @@ namespace Lab3
                         transform.position = new Vector3(transform.position.x, 0.6f, transform.position.z);
                     }
 
-                    PlayerPrefs.SetFloat("PlayerHeight", transform.position.y);
+                    BetterPlayerPrefs.SetFloat("PlayerHeight", transform.position.y);
 
-                    if(PlayerPrefs.GetInt("ObstacleNumber") % 5 == 0 && PlayerPrefs.GetInt("ObstacleNumber") != 0 && PlayerPrefs.GetInt("ObstacleNumber") / 5 != jumpLimit - 2)
+                    if(BetterPlayerPrefs.GetInt("ObstacleNumber") % 5 == 0 && BetterPlayerPrefs.GetInt("ObstacleNumber") != 0 && BetterPlayerPrefs.GetInt("ObstacleNumber") / 5 != jumpLimit - 2)
                     {
                         jumpLimit++;
                         BetterPlayerPrefs.PlusPlusFloat("ObstacleLowerHeightLimit");
@@ -105,7 +84,7 @@ namespace Lab3
                         Destroy(gameObject);
                     }
                     break;
-                case 1:
+                case true:
                     break;
             }
         }
@@ -114,13 +93,6 @@ namespace Lab3
         void OnCollisionEnter(Collision collision)
         {
             jumpCounter = 0;
-        }
-        private void OnTriggerEnter(Collider other)
-        {
-            if(other.tag == "Obstacle")
-            {
-                PlayerPrefs.SetInt("GameOver", 1);
-            }
         }
     }
 }
