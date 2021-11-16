@@ -42,44 +42,59 @@ public class SpawnManager : MonoBehaviour
         obstacles[0].transform.localScale = new Vector3(0.25f, 0.25f, 3);
         BetterPlayerPrefs.SetFloat("ObstacleLowerHeightLimit", 0.25f);
         BetterPlayerPrefs.SetFloat("ObstacleUpperHeightLimit", 1.5f);
+        BetterPlayerPrefs.SetBool("GameRunning", false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        switch(BetterPlayerPrefs.GetBool("GameOver"))
+        switch(BetterPlayerPrefs.GetBool("GameRunning"))
         {
-            case false:
-                if(isSpawning == false)
-                {
-                    Invoke("SpawnObstacle", 2);
-                    isSpawning = true;
-                }
-                scoreCounter.SetText($"Score: {score}");
-                gameOver.SetText("");
-                if(score > BetterPlayerPrefs.GetInt("HighScore"))
-                {
-                    BetterPlayerPrefs.SetInt("HighScore", score);
-                }
-                break;
             case true:
-                gameOver.SetText($"Game over!\nPress \"R\" to restart\n High Score: {BetterPlayerPrefs.GetInt("HighScore")}\nPress Ctrl+D to reset high score");
-                break;
-        }
+                switch(BetterPlayerPrefs.GetBool("GameOver"))
+                {
+                    case false:
+                        if(isSpawning == false)
+                        {
+                            Invoke("SpawnObstacle", 2);
+                            isSpawning = true;
+                        }
+                        scoreCounter.SetText($"Score: {score}");
+                        gameOver.SetText("");
+                        if(score > BetterPlayerPrefs.GetInt("HighScore"))
+                        {
+                            BetterPlayerPrefs.SetInt("HighScore", score);
+                        }
+                        break;
+                    case true:
+                        gameOver.color = Color.red;
+                        gameOver.SetText($"Game over!\nPress \"R\" to restart\n High Score: {BetterPlayerPrefs.GetInt("HighScore")}\nPress Ctrl+D to reset high score");
+                        break;
+                }
 
-        if(Input.GetKeyDown(KeyCode.R) == true)
-        {
-            BetterPlayerPrefs.SetBool("GameOver", false);
-            Instantiate(player, player.transform.position, player.transform.rotation);
-            Instantiate(groundOutline, player.transform.position, player.transform.rotation);
-            score = 0;
-        }
-        if(Input.GetKey(KeyCode.LeftControl) == true)
-        {
-            if(Input.GetKeyDown(KeyCode.D) == true)
-            {
-                BetterPlayerPrefs.SetInt("HighScore", 0);
-            }
+                if(Input.GetKeyDown(KeyCode.R) == true)
+                {
+                    BetterPlayerPrefs.SetBool("GameOver", false);
+                    Instantiate(player, player.transform.position, player.transform.rotation);
+                    Instantiate(groundOutline, player.transform.position, player.transform.rotation);
+                    score = 0;
+                }
+                if(Input.GetKey(KeyCode.LeftControl) == true)
+                {
+                    if(Input.GetKeyDown(KeyCode.D) == true)
+                    {
+                        BetterPlayerPrefs.SetInt("HighScore", 0);
+                    }
+                }
+                break;
+            default:
+                gameOver.color = Color.black;
+                gameOver.SetText("To the Skies!\nPress Space to begin");
+                if(Input.GetKeyDown(KeyCode.Space) == true)
+                {
+                    BetterPlayerPrefs.SetBool("GameRunning", true);
+                }
+                break;
         }
     }
 }

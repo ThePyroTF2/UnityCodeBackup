@@ -18,26 +18,33 @@ public class GroundOutlineController : MonoBehaviour
     void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
-        switch(BetterPlayerPrefs.GetBool("GameOver"))
+        switch(BetterPlayerPrefs.GetBool("GameRunning"))
         {
-            case false:
-                transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * speed);
+            case true:
+                switch(BetterPlayerPrefs.GetBool("GameOver"))
+                {
+                    case false:
+                        transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * speed);
 
-                if(transform.position.x > horizontalLimit)
-                {
-                    transform.position = new Vector3(horizontalLimit, transform.position.y, transform.position.z);
-                }
-                if(transform.position.x < -horizontalLimit / 2)
-                {
-                    transform.position = new Vector3(-horizontalLimit / 2, transform.position.y, transform.position.z);
-                }
+                        if(transform.position.x > horizontalLimit)
+                        {
+                            transform.position = new Vector3(horizontalLimit, transform.position.y, transform.position.z);
+                        }
+                        if(transform.position.x < -horizontalLimit / 2)
+                        {
+                            transform.position = new Vector3(-horizontalLimit / 2, transform.position.y, transform.position.z);
+                        }
 
-                if(Input.GetKeyDown(KeyCode.R) == true)
-                {
-                    Destroy(gameObject);
+                        if(Input.GetKeyDown(KeyCode.R) == true)
+                        {
+                            Destroy(gameObject);
+                        }
+                        break;
+                    case true:
+                        break;
                 }
                 break;
-            case true:
+            default:
                 break;
         }
     }

@@ -30,61 +30,68 @@ namespace Lab3
         void Update()
         {
             horizontalInput = Input.GetAxis("Horizontal");
-            switch(BetterPlayerPrefs.GetBool("GameOver"))
+            switch(BetterPlayerPrefs.GetBool("GameRunning"))
             {
-                case false:
-                    if(Input.GetKeyDown(jumpKey) == true &&  jumpCounter <= jumpLimit - 1)
+                case true:
+                    switch(BetterPlayerPrefs.GetBool("GameOver"))
                     {
-                        jumpCounter++;
-                        if(jumpCounter == 0)
-                        {
-                            rb.AddForce(Vector3.up * jumpForce);
-                        }
-                        else
-                        {
-                            //1/1.5 the upward force on the second jump, but with the current downward velocity added so it isn't negated by the falling
-                            //Also if it's going up the velocity shouldn't be added so that is accounted for
-                            if(rb.velocity.y <= 0)
+                        case false:
+                            if(Input.GetKeyDown(jumpKey) == true &&  jumpCounter <= jumpLimit - 1)
                             {
-                                rb.AddForce(Vector3.up * ((jumpForce / 1.5f) + Math.Abs(rb.velocity.y)), ForceMode.Impulse);
+                                jumpCounter++;
+                                if(jumpCounter == 0)
+                                {
+                                    rb.AddForce(Vector3.up * jumpForce);
+                                }
+                                else
+                                {
+                                    //1/1.5 the upward force on the second jump, but with the current downward velocity added so it isn't negated by the falling
+                                    //Also if it's going up the velocity shouldn't be added so that is accounted for
+                                    if(rb.velocity.y <= 0)
+                                    {
+                                        rb.AddForce(Vector3.up * ((jumpForce / 1.5f) + Math.Abs(rb.velocity.y)), ForceMode.Impulse);
+                                    }
+                                    else
+                                    {
+                                        rb.AddForce(Vector3.up * (jumpForce / 1.5f), ForceMode.Impulse);
+                                    }
+                                }
                             }
-                            else
+
+                            transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * speed);
+
+                            if(transform.position.x > horizontalLimit)
                             {
-                                rb.AddForce(Vector3.up * (jumpForce / 1.5f), ForceMode.Impulse);
+                                transform.position = new Vector3(horizontalLimit, transform.position.y, transform.position.z);
                             }
-                        }
-                    }
+                            if(transform.position.x < -horizontalLimit / 2)
+                            {
+                                transform.position = new Vector3(-horizontalLimit / 2, transform.position.y, transform.position.z);
+                            }
+                            if(Input.GetKeyDown(KeyCode.S) == true)
+                            {
+                                transform.position = new Vector3(transform.position.x, 0.6f, transform.position.z);
+                            }
 
-                    transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * speed);
+                            BetterPlayerPrefs.SetFloat("PlayerHeight", transform.position.y);
 
-                    if(transform.position.x > horizontalLimit)
-                    {
-                        transform.position = new Vector3(horizontalLimit, transform.position.y, transform.position.z);
-                    }
-                    if(transform.position.x < -horizontalLimit / 2)
-                    {
-                        transform.position = new Vector3(-horizontalLimit / 2, transform.position.y, transform.position.z);
-                    }
-                    if(Input.GetKeyDown(KeyCode.S) == true)
-                    {
-                        transform.position = new Vector3(transform.position.x, 0.6f, transform.position.z);
-                    }
-
-                    BetterPlayerPrefs.SetFloat("PlayerHeight", transform.position.y);
-
-                    if(BetterPlayerPrefs.GetInt("ObstacleNumber") % 5 == 0 && BetterPlayerPrefs.GetInt("ObstacleNumber") != 0 && BetterPlayerPrefs.GetInt("ObstacleNumber") / 5 != jumpLimit - 2)
-                    {
-                        jumpLimit++;
-                        BetterPlayerPrefs.PlusPlusFloat("ObstacleLowerHeightLimit");
-                        BetterPlayerPrefs.PlusPlusFloat("ObstacleUpperHightLimit");
-                    }
-                    
-                    if(Input.GetKeyDown(KeyCode.R) == true)
-                    {
-                        Destroy(gameObject);
+                            if(BetterPlayerPrefs.GetInt("ObstacleNumber") % 5 == 0 && BetterPlayerPrefs.GetInt("ObstacleNumber") != 0 && BetterPlayerPrefs.GetInt("ObstacleNumber") / 5 != jumpLimit - 2)
+                            {
+                                jumpLimit++;
+                                BetterPlayerPrefs.PlusPlusFloat("ObstacleLowerHeightLimit");
+                                BetterPlayerPrefs.PlusPlusFloat("ObstacleUpperHightLimit");
+                            }
+                            
+                            if(Input.GetKeyDown(KeyCode.R) == true)
+                            {
+                                Destroy(gameObject);
+                            }
+                            break;
+                        case true:
+                            break;
                     }
                     break;
-                case true:
+                default:
                     break;
             }
         }
