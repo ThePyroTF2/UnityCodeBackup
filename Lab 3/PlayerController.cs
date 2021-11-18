@@ -15,6 +15,7 @@ namespace Lab3
         float horizontalInput;
         public float speed = 4f;
         public float horizontalLimit = 10;
+        public float heightIncrease;
 
         // Start is called before the first frame update
         void Start()
@@ -78,8 +79,8 @@ namespace Lab3
                             if(BetterPlayerPrefs.GetInt("ObstacleNumber") % 5 == 0 && BetterPlayerPrefs.GetInt("ObstacleNumber") != 0 && BetterPlayerPrefs.GetInt("ObstacleNumber") / 5 != jumpLimit - 2)
                             {
                                 jumpLimit++;
-                                BetterPlayerPrefs.PlusPlusFloat("ObstacleLowerHeightLimit");
-                                BetterPlayerPrefs.PlusPlusFloat("ObstacleUpperHightLimit");
+                                BetterPlayerPrefs.PlusEqualsFloat("ObstacleLowerHeightLimit", heightIncrease);
+                                BetterPlayerPrefs.PlusEqualsFloat("ObstacleUpperHightLimit", heightIncrease);
                             }
                             
                             if(Input.GetKeyDown(KeyCode.R) == true)
@@ -95,7 +96,6 @@ namespace Lab3
                     break;
             }
         }
-
 
         void OnCollisionEnter(Collision collision)
         {

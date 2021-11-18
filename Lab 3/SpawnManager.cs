@@ -15,10 +15,33 @@ public class SpawnManager : MonoBehaviour
     int score = 0;
     BoxCollider[] obstacleHitCollider;
     public TextMeshPro gameOver;
+    public int quitCountDown = 3;
+    public bool quitting = false;
+    public bool displayingQuit = false;
 
     public void AddToScore(int increase)
     {
         score += increase;
+    }
+
+    void Quit()
+    {
+        if(Input.GetKey(KeyCode.Escape) == true)
+        {
+            Application.Quit();
+        }
+    }
+
+    void DisplayQuit()
+    {
+        gameOver.color = Color.black;
+        gameOver.SetText($"Quitting... {quitCountDown}");
+        if(quitCountDown != 3)
+        {
+            quitting = false;
+        }
+        quitCountDown--;
+        displayingQuit = false;
     }
 
     void SpawnObstacle()
@@ -28,8 +51,8 @@ public class SpawnManager : MonoBehaviour
         obstacleIndex = Random.Range(0, obstacles.Length);
         obstacleHitCollider = obstacles[obstacleIndex].GetComponents<BoxCollider>();
         obstacles[obstacleIndex].transform.localScale = spawnScale;
-        obstacleHitCollider[1].size = new Vector3(4, 4, 5);
-        obstacleHitCollider[1].center = new Vector3(0, 2, 0);
+        obstacleHitCollider[1].size = new Vector3(2.4f, 4, 5);
+        obstacleHitCollider[1].center = new Vector3(1.1f, 2, 0);
         Instantiate(obstacles[obstacleIndex], spawnPos, obstacles[obstacleIndex].transform.rotation);
         isSpawning = false;
     }
@@ -60,15 +83,21 @@ public class SpawnManager : MonoBehaviour
                             isSpawning = true;
                         }
                         scoreCounter.SetText($"Score: {score}");
-                        gameOver.SetText("");
+                        if(Input.GetKey(KeyCode.Escape) == false)
+                        {
+                            gameOver.SetText("");
+                        }
                         if(score > BetterPlayerPrefs.GetInt("HighScore"))
                         {
                             BetterPlayerPrefs.SetInt("HighScore", score);
                         }
                         break;
                     case true:
-                        gameOver.color = Color.red;
-                        gameOver.SetText($"Game over!\nPress \"R\" to restart\n High Score: {BetterPlayerPrefs.GetInt("HighScore")}\nPress Ctrl+D to reset high score");
+                        if(Input.GetKey(KeyCode.Escape) == false)
+                        {
+                            gameOver.color = Color.red;
+                            gameOver.SetText($"Game over!\nPress \"R\" to restart\n High Score: {BetterPlayerPrefs.GetInt("HighScore")}\nPress Ctrl+D to reset high score");
+                        }
                         break;
                 }
 
@@ -76,7 +105,9 @@ public class SpawnManager : MonoBehaviour
                 {
                     BetterPlayerPrefs.SetBool("GameOver", false);
                     Instantiate(player, player.transform.position, player.transform.rotation);
-                    Instantiate(groundOutline, player.transform.position, player.transform.rotation);
+                    Instantiate(groundOutline, groundOutline.transform.position, player.transform.rotation);
+                    BetterPlayerPrefs.SetFloat("ObstacleLowerHeightLimit", 0.25f);
+                    BetterPlayerPrefs.SetFloat("ObstacleUpperHeightLimit", 1.5f);
                     score = 0;
                 }
                 if(Input.GetKey(KeyCode.LeftControl) == true)
@@ -88,13 +119,38 @@ public class SpawnManager : MonoBehaviour
                 }
                 break;
             default:
-                gameOver.color = Color.black;
-                gameOver.SetText("To the Skies!\nPress Space to begin");
-                if(Input.GetKeyDown(KeyCode.Space) == true)
+                if(Input.GetKey(KeyCode.Escape) == false)
                 {
-                    BetterPlayerPrefs.SetBool("GameRunning", true);
+                    gameOver.color = Color.black;
+                    gameOver.SetText("To the Skies!\nPress Space to begin");
+                    if(Input.GetKeyDown(KeyCode.Space) == true)
+                    {
+                        BetterPlayerPrefs.SetBool("GameRunning", true);
+                    }
                 }
                 break;
+        }
+        if(Input.GetKeyDown(KeyCode.Escape) == true)
+        {
+            Invoke("Quit", 3);
+        }
+        if(Input.GetKey(KeyCode.Escape) == true && quitting == false)
+        {
+            if(displayingQuit == false)
+            {
+                if(quitCountDown == 3)
+                {
+                    DisplayQuit();
+                }
+                Invoke("DisplayQuit", 1);
+                displayingQuit = true;
+            }
+            quitting = true;
+        }
+        if(Input.GetKey(KeyCode.Escape) == false)
+        {
+            quitCountDown = 3;
+            quitting = false;
         }
     }
 }
